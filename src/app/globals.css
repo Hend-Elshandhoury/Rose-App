@@ -12,6 +12,21 @@ body {
   @apply font-sarabun;
 }
 
+/* Swiper pagination customization */
+.swiper-pagination-custom .swiper-pagination-bullet {
+  background-color: #FBEAEA;
+  width: 10px; 
+  height: 10px;
+  opacity: 1; 
+}
+
+.swiper-pagination-custom .swiper-pagination-bullet-active {
+  background-color: #A6252A;
+  width: 30px;
+  border-radius: 12px; 
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
