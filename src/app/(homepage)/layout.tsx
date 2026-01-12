@@ -3,8 +3,6 @@ import "../globals.css";
 import { Sarabun, Tajawal } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/Footer";
 
 const sarabun = Sarabun({
   subsets: ["latin"],
@@ -36,8 +34,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          {/* <Footer /> */}
           <main className="px-20 pt-10">{children}</main>
           <Toaster />
         </ThemeProvider>
