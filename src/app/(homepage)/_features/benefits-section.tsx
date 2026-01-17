@@ -1,6 +1,6 @@
 import { benefitsData } from "@/lib/constants/data";
 
-const BenefitsSection = () => {
+function BenefitsSection() {
     
     return (
         <section className="bg-maroon-50 rounded-2xl flex justify-around p-9">

@@ -1,9 +1,11 @@
 'use client';
-import { occasionsSliderData } from '@/lib/constants/data';
+
+import Swiper from 'swiper';
 import { cn } from '@/lib/utils/tailwind-merge';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { occasionsSliderData } from '@/lib/constants/data';
 
-const ControlSlider = ({ activeIndex, swiper }: { activeIndex: number | null, swiper?: any }) => {
+function ControlSlider({ activeIndex, swiper }: { activeIndex: number | null, swiper?: Swiper }) {
     // verify first and last item
     const firstItem = activeIndex === 0;
     const lastItem = activeIndex === occasionsSliderData.length - 1;

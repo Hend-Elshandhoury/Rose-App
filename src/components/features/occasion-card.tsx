@@ -5,8 +5,7 @@ import { IOccasionCardProps } from "@/lib/types";
 const OccasionCard = ({ occasion, height, children }: IOccasionCardProps) => {
     return (
         <div
-            className={cn("rounded-lg overflow-hidden relative w-full")}
-            style={{ height: `${height}px` }}
+            className={cn("rounded-lg overflow-hidden relative w-full",height === 440 ? "h-[440px]" : "h-[270px]" )}
         >
             {/* image */}
             <Image src={occasion.image} alt={occasion.title} fill

@@ -1,10 +1,9 @@
-
 import Link from 'next/link';
 import { occasion } from "@/lib/constants/data";
-import OccasionCard from "@/components/features/OccasionCard";
-import OccasionsSlider from "@/components/features/OccasionsSlider";
+import OccasionCard from "@/components/features/occasion-card";
+import OccasionsSlider from "@/components/features/occasions-slider";
 
-const HeroSection = () => {
+function HeroSection() {
 
     return (
         <section className="grid grid-cols-7 gap-x-6">

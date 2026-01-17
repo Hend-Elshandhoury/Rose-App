@@ -1,7 +1,7 @@
 import { occasionsData } from '@/lib/constants/data'
-import OccasionCard from '@/components/features/OccasionCard'
+import OccasionCard from '@/components/features/occasion-card'
 
-const OccasionsSection = () => {
+function OccasionsSection() {
 
     return (
         <section className='flex space-x-6'>

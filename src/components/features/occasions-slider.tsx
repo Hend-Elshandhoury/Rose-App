@@ -1,12 +1,13 @@
 'use client'
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Swiper } from 'swiper/react';
 import { useState, useRef } from 'react';
-import OccasionCard from './OccasionCard';
+import OccasionCard from './occasion-card';
 import { SwiperSlide } from 'swiper/react';
-import ControlSlider from './ControlSlider';
+import ControlSlider from './control-slider';
 import { occasionsSliderData } from '@/lib/constants/data';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 
