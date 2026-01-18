@@ -27,39 +27,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: `
-          bg-maroon-600 text-white hover:bg-maroon-700
-          dark:bg-softPink-300 dark:text-zinc-800 dark:hover:bg-softPink-400
-          ${disabledPrimary}
-        `,
-        secondary: `
-          bg-maroon-50 text-maroon-600 hover:bg-maroon-100
-          dark:bg-zinc-700 dark:text-softPink-300 dark:hover:bg-zinc-600
-          ${disabledPrimary}
-        `,
-        outline: `
-          bg-white border border-maroon-600 text-maroon-600 hover:bg-maroon-50
-          dark:bg-zinc-800 dark:border-softPink-300 dark:text-softPink-300 dark:hover:bg-zinc-700
-          ${disabledOutline}
-        `,
-        subtle: `
-          bg-zinc-50 border border-zinc-400 text-zinc-800 hover:bg-zinc-100
-          dark:bg-zinc-800 dark:border-zinc-500 dark:text-zinc-50 dark:hover:bg-zinc-700
-          ${disabledOutline}
-        `,
-        ghost: `
-          bg-transparent text-zinc-800 hover:bg-zinc-100
-          dark:bg-transparent dark:text-zinc-50 dark:hover:bg-zinc-700
-          ${disabledOutline}
-          dark:disabled:bg-zinc-700
-          dark:disabled:text-zinc-600
-          dark:disabled:border-zinc-800
-        `,
-        destructive: `
-          bg-red-600 text-white hover:bg-red-700
-          dark:bg-red-500 dark:text-zinc-50 dark:hover:bg-red-600
-          ${disabledPrimary}
-        `,
+        default:
+          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "px-4 py-2",
@@ -77,17 +54,13 @@ const buttonVariants = cva(
       size: "default",
     },
   }
-);
-
-/* =========================
-   Types
-========================= */
+)
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
-  loading?: boolean;
+  asChild?: boolean
 }
 
 /* =========================
@@ -95,35 +68,18 @@ export interface ButtonProps
 ========================= */
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      state,
-      asChild = false,
-      loading = false,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const Comp = asChild ? Slot : "button";
-
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
     return (
       <Comp
         ref={ref}
         className={cn(buttonVariants({ variant, size, state, className }))}
         disabled={loading || props.disabled}
         {...props}
-      >
-        {children}
-        {loading && <Loader2 className="animate-spin" />}
-      </Comp>
-    );
+      />
+    )
   }
-);
-
-Button.displayName = "Button";
+)
+Button.displayName = "Button"
 
 export { Button, buttonVariants };
