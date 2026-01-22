@@ -40,5 +40,15 @@
   "companies": {
     "header": "Trusted by over <span>4.5k+</span> companies"
   },
-  "auth": {}
+
+  "auth": {
+    "forgotPasswordTitle": "Forgot Password?",
+    "forgotPasswordDescription": "Worry not, we’ll send you instructions to help you reset it.",
+    "otpTitle": "Enter the OTP Code",
+    "otpDescription": "We have sent a 6-digit code to <span>{email}</span> <button>Edit</button>",
+    "newPasswordTitle": "Create a new password",
+    "newPasswordDescription": "Set a strong password to secure your account."
+  }
 }
+
+  

@@ -10,6 +10,7 @@ import ReactQueryProvider from "@/components/providers/react-query-provider";
 import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
 import localFont from "next/font/local";
+import { getServerSession } from "next-auth";
 
 const sarabun = Sarabun({
   subsets: ["latin"],
@@ -51,7 +52,7 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
   params: { locale },
 }: LayoutProps) {
@@ -61,25 +62,31 @@ export default function LocaleLayout({
 
   setRequestLocale(locale);
 
+  /* get the session(waiting for authOptions) */
+  const session = await getServerSession();
+
   return (
     <html
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
-      suppressHydrationWarning>
+      suppressHydrationWarning
+    >
       <body
         className={cn(
           sarabun.variable,
           tajawal.variable,
           edwardianScript.variable,
           "antialiased",
-        )}>
+        )}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange>
+          disableTransitionOnChange
+        >
           <ReactQueryProvider>
-            <Providers>
+            <Providers session={session}>
               <main>{children}</main>
 
               <Toaster richColors />

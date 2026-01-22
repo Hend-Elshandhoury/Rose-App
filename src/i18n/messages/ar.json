@@ -40,7 +40,14 @@
   "companies": {
     "header": "موثوق به من قبل أكثر من <span>+4.5k</span> شركة"
   },
+
   "auth": {
-    
+    "forgotPasswordTitle": "هل نسيت كلمة المرور؟",
+    "forgotPasswordDescription": "لا تقلق، سنرسل لك التعليمات لمساعدتك على إعادة تعيين كلمة المرور.",
+    "otpTitle": "أدخل رمز التحقق",
+    "otpDescription": "لقد أرسلنا رمز تحقق مكوّن من 6 أرقام إلى <span>{email}</span> <button>تعديل</button>",
+    "newPasswordTitle": "إنشاء كلمة مرور جديدة",
+    "newPasswordDescription": "قم بتعيين كلمة مرور قوية لحماية حسابك."
   }
 }
+  
