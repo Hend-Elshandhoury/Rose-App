@@ -1,8 +1,5 @@
-import React from 'react'
-import RememberChecknox from './remember-checknox'
+import Login from "./login";
 
-export default function Login() {
-  return (
-    <div><RememberChecknox/></div>
-  )
+export default function Page() {
+    return (<Login />)
 }

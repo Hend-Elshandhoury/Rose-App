@@ -10,7 +10,6 @@ import ReactQueryProvider from "@/components/providers/react-query-provider";
 import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
 import localFont from "next/font/local";
-import { getServerSession } from "next-auth";
 
 const sarabun = Sarabun({
   subsets: ["latin"],
@@ -34,19 +33,35 @@ type LayoutProps = {
   params: { locale: Locale };
 };
 
-export async function generateMetadata({
-  params: { locale },
-}: LayoutProps): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const params = await props.params;
+  const locale = params.locale;
+
   const t = await getTranslations({
     locale,
-    namespace: "metadata.root",
   });
 
   return {
-    title: t("title"),
-    description: t("description"),
+    title: (t as any)("metadata.root.title"),
+    description: (t as any)("metadata.root.description"),
   };
 }
+
+// export async function generateMetadata({
+//   params: { locale },
+// }: LayoutProps): Promise<Metadata> {
+//   const t = await getTranslations({
+//     locale,
+//     namespace: "metadata.root",
+//   });
+
+//   return {
+//     title: t("title"),
+//     description: t("description"),
+//   };
+// }
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -61,9 +76,6 @@ export default async function LocaleLayout({
   }
 
   setRequestLocale(locale);
-
-  /* get the session(waiting for authOptions) */
-  const session = await getServerSession();
 
   return (
     <html
@@ -86,7 +98,7 @@ export default async function LocaleLayout({
           disableTransitionOnChange
         >
           <ReactQueryProvider>
-            <Providers session={session}>
+            <Providers>
               <main>{children}</main>
 
               <Toaster richColors />

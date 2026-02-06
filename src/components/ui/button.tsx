@@ -1,3 +1,5 @@
+
+
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -58,6 +60,7 @@ const buttonVariants = cva(
           dark:bg-red-500 dark:text-zinc-50 dark:hover:bg-red-600
           ${disabledPrimary}
         `,
+        link: "bg-none"
       },
       size: {
         default: "px-4 py-2",
@@ -74,7 +77,7 @@ const buttonVariants = cva(
       variant: "primary",
       size: "default",
     },
-  },
+  }
 );
 
 /* =========================
@@ -82,8 +85,7 @@ const buttonVariants = cva(
 ========================= */
 
 export interface ButtonProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
@@ -105,7 +107,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref,
+    ref
   ) => {
     const Comp = asChild ? Slot : "button";
 
@@ -120,7 +122,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {loading && <Loader2 className="animate-spin" />}
       </Comp>
     );
-  },
+  }
 );
 
 Button.displayName = "Button";

@@ -1,16 +1,19 @@
 import { NextIntlClientProvider } from "next-intl";
-import NextAuthProvider from "./session-provider";
-import { LayoutProps } from "@/lib/types/layout.types";
+import NextAuthProvider from "./shared/components/next-auth.provider";
+import AuthChecker from "./auth-checker"
 
-export function Providers({ children, session }: LayoutProps) {
+type LayoutProps = {
+  children: React.ReactNode;
+};
+
+export function Providers({ children }: LayoutProps) {
   return (
     <>
       {/* Providers */}
-      <NextIntlClientProvider>
-      <NextAuthProvider session={session}>
-          {children}
-        </NextAuthProvider>
-      </NextIntlClientProvider>
+      <NextAuthProvider>
+        <AuthChecker/>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+      </NextAuthProvider>
     </>
   );
 }
