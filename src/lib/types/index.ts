@@ -38,4 +38,11 @@ export type OrderItem = {
     reviews: number;
 };
 
+//DASHBOARD
+export type OrderStatus = {
+    _id: string;
+    revenue?: number;
+    count: number;
+}
+
 

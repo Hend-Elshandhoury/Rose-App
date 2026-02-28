@@ -173,7 +173,6 @@
     "delete-account": "حذف الحساب الشخصي",
     "delete-confirm": "هل أنت متأكد أنك تريد حذف هذا الحساب؟",
     "delete-subtitle": "هذا الإجراء دائم ولا يمكن التراجع عنه.",
-
     "confirm-button": "نعم, قم بالحذف",
     "cancel-button": "لا لن أقوم بالحذف",
     "change-password-button": "تغيير كلمة السر",
@@ -233,12 +232,10 @@
       "price-to-greater-than-from": "يجب أن يكون السعر 'إلى' أكبر من السعر 'من'"
     }
   },
-
   "order": {
     "order": "طلب",
     "orders": "الطلبات",
     "created": "تم الإنشاء في",
-    "canceled": "ملغي",
     "done": "مكتمل",
     "delivered": "تم التسليم",
     "in_progress": "قيد التنفيذ",
@@ -252,7 +249,14 @@
     "less": "عرض أقل",
     "all": "عرض الكل",
     "rating": "تقييم",
-    "ratings": "التقييمات"
+    "ratings": "التقييمات",
+    "order_status": "حالة الطلبات",
+    "revenue": "الإيرادات",
+    "monthly": "شهرياً",
+    "last_week": "الأسبوع الماضي",
+    "completed": "مكتمل",
+    "inProgress": "قيد التنفيذ",
+    "canceled": "ملغي"
   },
   "profile": {
     "update-profile": "تحديث الحساب",
@@ -285,7 +289,5 @@
   },
   "product-may-like": {
     "title": "منتجات قد تُعجبك"
-
   }
-
 }
