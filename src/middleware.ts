@@ -20,26 +20,26 @@ export default async function middleware(req: NextRequest) {
 
   const token = await getToken({ req });
 
-  // if (pathnameWithoutLocale.startsWith("/dashboard")) {
-  //   if (!token) {
-  //     const loginUrl = new URL(`/${locale}/login`, req.url);
-  //     loginUrl.searchParams.set("callbackUrl", pathname);
-  //     return NextResponse.redirect(loginUrl);
-  //   }
-  //   return intlMiddleware(req);
-  // }
-  // const isProtectedPage = protectedPages.some((page) =>
-  //   pathnameWithoutLocale.startsWith(page),
-  // );
+  if (pathnameWithoutLocale.startsWith("/dashboard")) {
+    if (!token) {
+      const loginUrl = new URL(`/${locale}/login`, req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return intlMiddleware(req);
+  }
+  const isProtectedPage = protectedPages.some((page) =>
+    pathnameWithoutLocale.startsWith(page),
+  );
 
-  // if (isProtectedPage) {
-  //   if (!token) {
-  //     const loginUrl = new URL(`/${locale}/login`, req.url);
-  //     loginUrl.searchParams.set("callbackUrl", pathname);
-  //     return NextResponse.redirect(loginUrl);
-  //   }
-  //   return intlMiddleware(req);
-  // }
+  if (isProtectedPage) {
+    if (!token) {
+      const loginUrl = new URL(`/${locale}/login`, req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return intlMiddleware(req);
+  }
 
   const isAuthPage = authPages.some((page) => pathnameWithoutLocale === page);
   if (isAuthPage) {
