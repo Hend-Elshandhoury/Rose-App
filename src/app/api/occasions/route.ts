@@ -1,24 +1,13 @@
-import { OccasionResponse } from "@/lib/types/occasions.types";
+import { fetchOccasions } from "@/app/[locale]/(site)/(homepage)/_services/fetch-occasions";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = searchParams.get("page") || "1";
-    const limit = searchParams.get("limit") || "10";
+    const page = Number(searchParams.get("page") ?? 1);
+    const limit = Number(searchParams.get("limit") ?? 10);
 
-    const url = new URL(`${process.env.API_URL}/occasions`);
-    url.searchParams.append("limit", limit);
-    url.searchParams.append("page", page);
-
-    const response = await fetch(url.toString());
-
-    if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
-    }
-
-    const data: OccasionResponse = await response.json();
-
+    const data = await fetchOccasions({ page, limit });
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching occasions:", error);

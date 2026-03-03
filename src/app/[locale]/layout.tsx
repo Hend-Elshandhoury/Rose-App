@@ -36,7 +36,6 @@ type LayoutProps = {
 export async function generateMetadata(props: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-
   const params = await props.params;
   const locale = params.locale;
 
@@ -45,11 +44,10 @@ export async function generateMetadata(props: {
   });
 
   return {
-    title: (t as any)('metadata.root.title'),
-    description: (t as any)('metadata.root.description'),
+    title: (t as any)("metadata.root.title"),
+    description: (t as any)("metadata.root.description"),
   };
 }
-
 
 // export async function generateMetadata({
 //   params: { locale },
@@ -97,7 +95,6 @@ export default function LocaleLayout({
           enableSystem
           disableTransitionOnChange>
           <ReactQueryProvider>
-
             <Providers>
               <main>{children}</main>
 
