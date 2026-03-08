@@ -10,7 +10,7 @@ export async function allCategoriesService({
   limit,
 }: FetchCategoriesParams): Promise<CategoriesResponse> {
   const res = await fetch(
-    `/api/categories?page=${page}&limit=${limit}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/categories?page=${page}&limit=${limit}`,
   );
 
   if (!res.ok) {

@@ -15,3 +15,14 @@ export type CategoriesResponse = {
     totalItems: number;
   };
 };
+
+export type CategoryResponse = {
+  message: string;
+  category: Category;
+  metadata: {
+    currentPage: number;
+    totalPages: number;
+    limit: number;
+    totalItems: number;
+  };
+};

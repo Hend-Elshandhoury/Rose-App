@@ -317,5 +317,14 @@
     "username_max": "Username must not exceed 20 characters.",
     "lat_invalid": "Please select a valid location on the map.",
     "long_invalid": "Please select a valid location on the map."
+  },
+  "dashboard": {
+    "categories":{
+      "add_category": "Add a New Category",
+      "edit_category": "Update Category",
+      "name": "Name",
+      "image": "Category image",
+      "add_btn": "Add Category"
+    }
   }
 }
