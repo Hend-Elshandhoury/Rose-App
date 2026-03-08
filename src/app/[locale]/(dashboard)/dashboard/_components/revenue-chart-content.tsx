@@ -44,7 +44,7 @@ export default function RevenueChartContent({ data }: { data: OrderStatus[] }) {
                         dataKey="_id"
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: "##27272a", fontWeight: 500 }}
+                        tick={{ fill: "#27272a", fontWeight: 500 }}
                         // dy={10}
                         tickFormatter={formatXAxis}
                     />
@@ -52,7 +52,7 @@ export default function RevenueChartContent({ data }: { data: OrderStatus[] }) {
                     <YAxis
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: "##27272a", fontWeight: 500 }}
+                        tick={{ fill: "#27272a", fontWeight: 500 }}
                         orientation="left"
                         // width={80}
                         dx={isRTL ? -60 : 0}

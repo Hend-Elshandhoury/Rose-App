@@ -1,11 +1,9 @@
 import { OrderStatus } from "@/lib/types";
 import { STATUS_COLORS } from "@/lib/constants";
-import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils/tailwind-merge";
 
 
 export default function FilterDataOrderStatus({ data, totalCount }: { data: OrderStatus[], totalCount: number }) {
-    // TRANSLATE
-const t = useTranslations("order");
 
     return (
         <div className="lg:mt-6 w-full space-y-2">
@@ -13,11 +11,10 @@ const t = useTranslations("order");
                 <div key={item._id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div
-                            className="size-2.5 rounded-full"
-                            style={{ backgroundColor: STATUS_COLORS[item._id] }}
+                            className={cn("size-2.5 rounded-full", `bg-${STATUS_COLORS[item._id]}`)}
                         />
                         <span className="text-xs font-semibold capitalize">
-                            { t(item._id)}
+                            {item._id}
                         </span>
                     </div>
                     <div className="text-xs font-bold flex gap-1">

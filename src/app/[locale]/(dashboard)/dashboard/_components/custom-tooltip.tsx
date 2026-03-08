@@ -1,5 +1,13 @@
+"use client";
+
+import { useFormatter } from 'next-intl';
+
 export default function CustomTooltip({ active, payload, coordinate }: any) {
+    const t = useFormatter();
+
     if (active && payload && payload.length && coordinate) {
+        const amount = payload[0].value;
+
         return (
             <div
                 style={{
@@ -14,8 +22,8 @@ export default function CustomTooltip({ active, payload, coordinate }: any) {
                     alignItems: "center",
                 }}
             >
-                <span className="text-[12px] font-bold text-maroon-600 bg-white/80 px-1 rounded">
-                    {`${payload[0].value.toLocaleString()} EGP`}
+                <span className="text-[0.75rem] font-bold text-maroon-600 bg-white/80 px-1 rounded">
+                    {t.number(amount, { style: 'currency', currency: 'EGP' })}
                 </span>
             </div>
         );

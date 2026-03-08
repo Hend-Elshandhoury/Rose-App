@@ -9,7 +9,6 @@ export default function RenderCustomLabel({ cx, cy, midAngle, innerRadius, outer
     // PERCENTAGE
     const percent = ((payload.count / totalCount) * 100).toFixed(0);
 
-    // 
     return (
         <g>
             <circle cx={x} cy={y} r={16} fill="#FAFAFA" stroke="#e4e4e7" />
