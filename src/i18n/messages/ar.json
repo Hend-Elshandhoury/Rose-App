@@ -248,6 +248,7 @@
       "price-to-greater-than-from": "يجب أن يكون السعر 'إلى' أكبر من السعر 'من'"
     }
   },
+
   "cart": {
   "summary": {
     "title": "ملخص الطلب",
@@ -291,11 +292,11 @@
     "quantity-updated-successfully": "تم تحديث الكمية بنجاح",
     "product-added-successfully": "تمت إضافة المنتج إلى السلة بنجاح"
 },
+
   "order": {
     "order": "طلب",
     "orders": "الطلبات",
     "created": "تم الإنشاء في",
-    "canceled": "ملغي",
     "done": "مكتمل",
     "delivered": "تم التسليم",
     "in_progress": "قيد التنفيذ",
@@ -309,7 +310,14 @@
     "less": "عرض أقل",
     "all": "عرض الكل",
     "rating": "تقييم",
-    "ratings": "التقييمات"
+    "ratings": "التقييمات",
+    "order_status": "حالة الطلبات",
+    "revenue": "الإيرادات",
+    "monthly": "شهرياً",
+    "last_week": "الأسبوع الماضي",
+    "completed": "مكتمل",
+    "inProgress": "قيد التنفيذ",
+    "canceled": "ملغي"
   },
   "profile": {
     "update-profile": "تحديث الحساب",
@@ -329,6 +337,9 @@
   },
   "product-may-like": {
     "title": "منتجات قد تُعجبك"
+
+  }
+
   },
   "dashboard": {
     "overview": {
@@ -410,3 +421,4 @@
     "logout": "تسجيل خروج"
   }
 }
+
