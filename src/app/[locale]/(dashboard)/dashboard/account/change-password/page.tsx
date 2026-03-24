@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/auth";
-import { AccountSettingsForm } from "@/features/profile/components/account-settings-form";
+import { ChangePasswordForm } from "@/features/profile/components/change-password-form";
 
-export default async function AccountSettingsPage() {
+export default async function ChangePasswordPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
@@ -11,8 +11,8 @@ export default async function AccountSettingsPage() {
   }
 
   return (
-    <div className="p-6 md:p-8">
-      <AccountSettingsForm user={session.user} />
+    <div className="w-full min-w-0 max-w-[100vw] py-2 sm:py-4">
+      <ChangePasswordForm />
     </div>
   );
 }

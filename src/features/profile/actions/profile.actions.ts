@@ -2,152 +2,171 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
+import { JSON_HEADER } from "@/lib/constants/api.constance";
 import {
-  updateProfileApi,
-  changePasswordApi,
-  deleteAccountApi,
-} from "@/lib/services/profile.api";
-import {
-  profileUpdateSchema,
   changePasswordSchema,
+  profileUpdateSchema,
 } from "@/lib/schemes/profile.schema";
-import type {
-  UpdateProfilePayload,
-  ChangePasswordPayload,
-} from "@/lib/types/profile";
+import type { ChangePasswordFields, ProfileUpdateFields } from "@/lib/schemes/profile.schema";
 
-export type ActionResult<T = void> =
-  | { success: true; data?: T; message?: string }
-  | { success: false; error: string };
+function getApiBaseUrl(): string {
+  const raw =
+    process.env.API_URL?.trim() ||
+    process.env.NEXT_PUBLIC_API_URL?.trim() ||
+    "";
+  if (!raw) {
+    throw new Error("Missing API_URL or NEXT_PUBLIC_API_URL");
+  }
+  return raw.replace(/\/+$/, "");
+}
 
-export async function updateProfileAction(
-  payload: UpdateProfilePayload,
-): Promise<ActionResult<{ user: unknown }>> {
+/**
+ * Safe JSON parse for optional error bodies (success responses are often empty).
+ */
+async function parseResponse(res: Response): Promise<unknown> {
+  const text = await res.text();
+  if (!text.trim()) return null;
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.accessToken) {
-      return {
-        success: false,
-        error: "You must be signed in to update your profile.",
-      };
-    }
-
-    const parsed = profileUpdateSchema.safeParse(payload);
-    if (!parsed.success) {
-      const first = parsed.error.flatten().fieldErrors;
-      const message =
-        Object.values(first).flat().join(" ") || "Validation failed.";
-      return { success: false, error: message };
-    }
-
-    const data = await updateProfileApi(session.accessToken, parsed.data);
-    return { success: true, data, message: "Profile updated successfully." };
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to update profile.";
-    return { success: false, error: message };
+    return JSON.parse(text) as unknown;
+  } catch {
+    return null;
   }
 }
 
-export async function changePasswordAction(
-  payload: ChangePasswordPayload & { confirmNewPassword: string },
-): Promise<ActionResult> {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.accessToken) {
-      return {
-        success: false,
-        error: "You must be signed in to change your password.",
-      };
+function messageFromStatus(status: number, data: unknown): string {
+  if (status === 401 || status === 403) {
+    return "Session expired or unauthorized. Please sign in again.";
+  }
+  if (status === 404) return "Resource not found.";
+  if (status === 422 || status === 400) {
+    if (data && typeof data === "object" && "message" in data) {
+      const m = (data as { message?: unknown }).message;
+      if (typeof m === "string") return m;
     }
+    return "Invalid request.";
+  }
+  return `Request failed (${status})`;
+}
 
-    const parsed = changePasswordSchema.safeParse({
-      currentPassword: payload.currentPassword,
-      newPassword: payload.newPassword,
-      confirmNewPassword: payload.confirmNewPassword,
-    });
-    if (!parsed.success) {
-      const first = parsed.error.flatten().fieldErrors;
-      const message =
-        Object.values(first).flat().join(" ") || "Validation failed.";
-      return { success: false, error: message };
-    }
+async function assertOkEmptyBody(res: Response, context: string): Promise<void> {
+  if (process.env.NODE_ENV === "development") {
+    console.log(`[profile.actions] ${context}`, res.status);
+  }
 
-    await changePasswordApi(session.accessToken, {
+  if (res.status === 200 || res.status === 204) {
+    return;
+  }
+
+  const data = await parseResponse(res);
+  throw new Error(messageFromStatus(res.status, data));
+}
+
+type SessionWithToken = NonNullable<
+  Awaited<ReturnType<typeof getServerSession>>
+> & { accessToken?: string };
+
+function requireSessionToken(
+  session: Awaited<ReturnType<typeof getServerSession>>,
+): string {
+  const token = (session as SessionWithToken | null)?.accessToken;
+  if (typeof token !== "string" || !token.trim()) {
+    throw new Error("You must be signed in.");
+  }
+  return token.trim();
+}
+
+export async function updateProfileAction(values: ProfileUpdateFields) {
+  const session = await getServerSession(authOptions);
+  const token = requireSessionToken(session);
+
+  const parsed = profileUpdateSchema.safeParse(values);
+  if (!parsed.success) {
+    const msg = Object.values(parsed.error.flatten().fieldErrors)
+      .flat()
+      .filter(Boolean)
+      .join(" ");
+    throw new Error(msg || "Validation failed");
+  }
+  const res = await fetch(`${getApiBaseUrl()}/auth/editProfile`, {
+    method: "PUT",
+    headers: {
+      ...JSON_HEADER,
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(parsed.data),
+    cache: "no-store",
+    credentials: "omit",
+  });
+
+  await assertOkEmptyBody(res, "updateProfile");
+}
+
+export async function changePasswordAction(values: ChangePasswordFields) {
+  const session = await getServerSession(authOptions);
+  const token = requireSessionToken(session);
+
+  const parsed = changePasswordSchema.safeParse(values);
+  if (!parsed.success) {
+    const msg = Object.values(parsed.error.flatten().fieldErrors)
+      .flat()
+      .filter(Boolean)
+      .join(" ");
+    throw new Error(msg || "Validation failed");
+  }
+  const res = await fetch(`${getApiBaseUrl()}/auth/change-password`, {
+    method: "PUT",
+    headers: {
+      ...JSON_HEADER,
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
       currentPassword: parsed.data.currentPassword,
       newPassword: parsed.data.newPassword,
-    });
-    return { success: true, message: "Password changed successfully." };
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to change password.";
-    return { success: false, error: message };
-  }
+    }),
+    cache: "no-store",
+    credentials: "omit",
+  });
+
+  await assertOkEmptyBody(res, "changePassword");
 }
 
-export async function deleteAccountAction(): Promise<ActionResult> {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.accessToken) {
-      return {
-        success: false,
-        error: "You must be signed in to delete your account.",
-      };
-    }
+export async function deleteProfileAction() {
+  const session = await getServerSession(authOptions);
+  const token = requireSessionToken(session);
 
-    await deleteAccountApi(session.accessToken);
-    return { success: true, message: "Account deleted." };
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to delete account.";
-    return { success: false, error: message };
-  }
+  const res = await fetch(`${getApiBaseUrl()}/auth/deleteMe`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    credentials: "omit",
+  });
+
+  await assertOkEmptyBody(res, "deleteProfile");
 }
 
-export async function uploadProfilePhotoAction(
-  formData: FormData,
-): Promise<ActionResult<{ photo?: string }>> {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session?.accessToken) {
-      return {
-        success: false,
-        error: "You must be signed in to upload a photo.",
-      };
-    }
+export async function updateProfilePhotoAction(formData: FormData) {
+  const session = await getServerSession(authOptions);
+  const token = requireSessionToken(session);
 
-    const file = formData.get("photo") as File | null;
-    if (!file?.size) {
-      return { success: false, error: "No file provided." };
-    }
-
-    const res = await fetch(
-      `${process.env.API_URL}/user/profile/photo`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-        },
-        body: formData,
-      },
-    );
-
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      return {
-        success: false,
-        error: (data as { message?: string }).message ?? "Failed to upload photo.",
-      };
-    }
-
-    return {
-      success: true,
-      data: { photo: (data as { user?: { photo?: string }; photo?: string }).user?.photo ?? (data as { photo?: string }).photo },
-      message: "Photo updated successfully.",
-    };
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Failed to upload photo.";
-    return { success: false, error: message };
+  const file = formData.get("photo");
+  if (!file || !(file instanceof Blob) || file.size === 0) {
+    throw new Error("No file provided");
   }
+
+  const res = await fetch(`${getApiBaseUrl()}/user/profile/photo`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+    cache: "no-store",
+    credentials: "omit",
+  });
+
+  await assertOkEmptyBody(res, "updateProfilePhoto");
 }
+
+/** @deprecated use updateProfilePhotoAction */
+export const uploadProfilePhotoAction = updateProfilePhotoAction;

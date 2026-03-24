@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useDeleteAccountMutation } from "@/hooks/use-profile-mutations";
+import { useDeleteAccountMutation } from "@/hooks/use-profile";
 
 export function DeleteAccountDialog() {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ export function DeleteAccountDialog() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-sm font-medium text-maroon-600 dark:text-maroon-400 hover:underline"
+        className="text-sm font-medium text-red-600 dark:text-red-400 hover:underline underline-offset-2"
       >
         Delete My Account
       </button>

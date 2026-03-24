@@ -1,8 +1,8 @@
 'use client';
 
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { CalendarHeart, ClipboardList, LayoutDashboard, Package } from "lucide-react";
-import Link from "next/link";
+import { CalendarHeart, ClipboardList, LayoutDashboard, Package, UserRound } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils/tailwind-merge";
 import { useTranslations } from "next-intl";
@@ -35,13 +35,15 @@ export default function SidebarContentMenu() {
             name: t("products"),
             icon: Package,
             url: "/dashboard/products",
-        }
+        },
     ];
 
     return (
         <SidebarMenu className="flex flex-col gap-4">
             {menus.map((menu) => {
-                const isActive = pathName === menu.url;
+                const isActive =
+                    pathName === menu.url ||
+                    (pathName.startsWith(`${menu.url}/`) && menu.url !== "/dashboard");
                 return (
                     <SidebarMenuItem key={menu.name} className=" text-zinc-800 w-full">
                         <SidebarMenuButton className="h-11" asChild>

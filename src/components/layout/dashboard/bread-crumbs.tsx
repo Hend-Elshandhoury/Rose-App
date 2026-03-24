@@ -1,6 +1,7 @@
 // components/breadcrumbs.tsx
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -26,8 +27,8 @@ export function Breadcrumbs() {
   const resolvedLabels = useResolveBreadcrumbLabels(pathSegments);
 
   return (
-    <Breadcrumb className="py-6 -ms-10 ps-14 border-b border-black/8 dark:border-zinc-50/8 bg-white dark:bg-zinc-900">
-      <BreadcrumbList>
+    <Breadcrumb className="bg-transparent py-0">
+      <BreadcrumbList className="flex-wrap gap-x-1 gap-y-1 sm:gap-x-1.5">
         {pathSegments.map((segment, index) => {
           const href =
             "/" + [locale, ...pathSegments.slice(0, index + 1)].join("/");
@@ -38,22 +39,25 @@ export function Breadcrumbs() {
             : formatLabel(segment);
 
           return (
-            <>
+            <React.Fragment key={href}>
               {index !== 0 && <BreadcrumbSeparator key={`sep-${href}`} />}
               <BreadcrumbItem key={href}>
                 {isLast ? (
-                  <BreadcrumbPage className="capitalize">
+                  <BreadcrumbPage className="max-w-[min(100vw-8rem,28rem)] truncate text-sm font-semibold text-maroon-700 capitalize dark:text-softPink-200 sm:text-base">
                     {label}
                   </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink asChild>
-                    <Link href={href} className="capitalize">
+                    <Link
+                      href={href}
+                      className="capitalize text-xs text-zinc-500 hover:text-zinc-800 sm:text-sm dark:text-zinc-400 dark:hover:text-zinc-200"
+                    >
                       {label}
                     </Link>
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
-            </>
+            </React.Fragment>
           );
         })}
       </BreadcrumbList>

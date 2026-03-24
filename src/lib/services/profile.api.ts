@@ -4,52 +4,80 @@ import type {
   ChangePasswordPayload,
 } from "@/lib/types/profile";
 
-const getAuthHeaders = (accessToken: string) => ({
-  ...JSON_HEADER,
-  Authorization: `Bearer ${accessToken}`,
-});
+export { JSON_HEADER };
+
+export function getServerApiBaseUrl(): string {
+  const raw =
+    process.env.API_URL?.trim() ||
+    process.env.NEXT_PUBLIC_API_URL?.trim() ||
+    "";
+
+  if (!raw) {
+    throw new Error("Missing API URL");
+  }
+
+  return raw.replace(/\/+$/, "");
+}
+
+export function getAuthHeaders(accessToken: string): Record<string, string> {
+  if (!accessToken?.trim()) {
+    throw new Error("Missing token");
+  }
+
+  return {
+    ...JSON_HEADER,
+    Authorization: `Bearer ${accessToken}`,
+  };
+}
+
+async function readResponseBody(res: Response) {
+  const text = await res.text();
+
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
 
 /**
- * Update user profile (API client).
- * PATCH /user/profile
+ * ✅ EDIT PROFILE
  */
-export async function updateProfileApi(
+export async function editProfileApi(
   accessToken: string,
   payload: UpdateProfilePayload,
 ) {
-  const baseUrl = process.env.API_URL;
-  if (!baseUrl) throw new Error("API_URL is not configured.");
+  const baseUrl = getServerApiBaseUrl();
 
-  const res = await fetch(`${baseUrl}/user/profile`, {
-    method: "PATCH",
+  const res = await fetch(`${baseUrl}/auth/editProfile`, {
+    method: "PUT",
     headers: getAuthHeaders(accessToken),
     body: JSON.stringify(payload),
   });
 
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const message =
-      (data as { message?: string }).message ??
-      (data as { error?: string }).error ??
-      "Failed to update profile.";
-    throw new Error(message);
+  console.log("EDIT PROFILE STATUS:", res.status);
+
+  if (res.status === 200 || res.status === 204) {
+    return { success: true };
   }
 
-  return data as { user?: unknown };
+  const data = await readResponseBody(res);
+
+  throw new Error((data as any)?.message || "Failed to update profile");
 }
 
 /**
- * Change user password (API client).
- * PUT /user/profile/password
+ * CHANGE PASSWORD
  */
 export async function changePasswordApi(
   accessToken: string,
   payload: ChangePasswordPayload,
 ) {
-  const baseUrl = process.env.API_URL;
-  if (!baseUrl) throw new Error("API_URL is not configured.");
+  const baseUrl = getServerApiBaseUrl();
 
-  const res = await fetch(`${baseUrl}/user/profile/password`, {
+  const res = await fetch(`${baseUrl}/auth/change-password`, {
     method: "PUT",
     headers: getAuthHeaders(accessToken),
     body: JSON.stringify({
@@ -58,35 +86,35 @@ export async function changePasswordApi(
     }),
   });
 
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const message =
-      (data as { message?: string }).message ??
-      (data as { error?: string }).error ??
-      "Failed to change password.";
-    throw new Error(message);
+  console.log("CHANGE PASSWORD STATUS:", res.status);
+
+  if (res.status === 200 || res.status === 204) {
+    return { success: true };
   }
+
+  const data = await readResponseBody(res);
+
+  throw new Error((data as any)?.message || "Failed to change password");
 }
 
 /**
- * Delete user account (API client).
- * DELETE /user/account
+ * ✅ DELETE ACCOUNT
  */
 export async function deleteAccountApi(accessToken: string) {
-  const baseUrl = process.env.API_URL;
-  if (!baseUrl) throw new Error("API_URL is not configured.");
+  const baseUrl = getServerApiBaseUrl();
 
-  const res = await fetch(`${baseUrl}/user/account`, {
+  const res = await fetch(`${baseUrl}/auth/deleteMe`, {
     method: "DELETE",
     headers: getAuthHeaders(accessToken),
   });
 
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const message =
-      (data as { message?: string }).message ??
-      (data as { error?: string }).error ??
-      "Failed to delete account.";
-    throw new Error(message);
+  console.log("DELETE STATUS:", res.status);
+
+  if (res.status === 200 || res.status === 204) {
+    return { success: true };
   }
+
+  const data = await readResponseBody(res);
+
+  throw new Error((data as any)?.message || "Failed to delete account");
 }

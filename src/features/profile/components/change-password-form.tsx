@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Form,
   FormControl,
@@ -10,9 +11,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Button } from "@/components/ui/button";
 import { InputPassword } from "@/components/ui/input-password";
-import { useChangePasswordMutation } from "@/hooks/use-profile-mutations";
+
+import { useChangePasswordMutation } from "@/hooks/use-profile";
+
 import {
   changePasswordSchema,
   type ChangePasswordFields,
@@ -31,32 +35,35 @@ export function ChangePasswordForm() {
   });
 
   const isSubmitting = changePasswordMutation.isPending;
+  const isDirty = form.formState.isDirty;
 
   function onSubmit(values: ChangePasswordFields) {
     changePasswordMutation.mutate(values, {
-      onSuccess: () => form.reset(),
+      onSuccess: () => {
+        form.reset();
+      },
     });
   }
 
   return (
-    <>
-      <h1 className="text-xl md:text-2xl font-bold text-zinc-800 dark:text-zinc-200 mb-6">
+    <div className="mx-auto w-full px-10 ">
+      <h1 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-100 sm:mb-6 sm:text-2xl md:text-3xl">
         Change Password
       </h1>
 
-      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm dark:shadow-none p-4 md:p-6">
+      <div className="rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-md dark:border-zinc-700 dark:bg-zinc-900 sm:p-6 md:rounded-3xl md:p-8 md:shadow-lg">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-6"
+            className="flex flex-col gap-5 sm:gap-6"
           >
             {/* Old Password */}
             <FormField
               control={form.control}
               name="currentPassword"
               render={({ field }) => (
-                <FormItem className="gap-1 pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                  <FormLabel className="text-zinc-800 dark:text-zinc-200">
+                <FormItem className="gap-1.5 border-b border-zinc-200 pb-4 dark:border-zinc-700 sm:pb-5">
+                  <FormLabel className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                     Old Password
                   </FormLabel>
 
@@ -68,6 +75,7 @@ export function ChangePasswordForm() {
                           ? "error"
                           : "default"
                       }
+                      disabled={isSubmitting}
                       {...field}
                     />
                   </FormControl>
@@ -82,8 +90,8 @@ export function ChangePasswordForm() {
               control={form.control}
               name="newPassword"
               render={({ field }) => (
-                <FormItem className="gap-1">
-                  <FormLabel className="text-zinc-800 dark:text-zinc-200">
+                <FormItem className="gap-1.5">
+                  <FormLabel className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                     New Password
                   </FormLabel>
 
@@ -91,8 +99,11 @@ export function ChangePasswordForm() {
                     <InputPassword
                       placeholder="New Password"
                       status={
-                        form.formState.errors.newPassword ? "error" : "default"
+                        form.formState.errors.newPassword
+                          ? "error"
+                          : "default"
                       }
+                      disabled={isSubmitting}
                       {...field}
                     />
                   </FormControl>
@@ -107,8 +118,8 @@ export function ChangePasswordForm() {
               control={form.control}
               name="confirmNewPassword"
               render={({ field }) => (
-                <FormItem className="gap-1">
-                  <FormLabel className="text-zinc-800 dark:text-zinc-200">
+                <FormItem className="gap-1.5">
+                  <FormLabel className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
                     Confirm New Password
                   </FormLabel>
 
@@ -120,6 +131,7 @@ export function ChangePasswordForm() {
                           ? "error"
                           : "default"
                       }
+                      disabled={isSubmitting}
                       {...field}
                     />
                   </FormControl>
@@ -129,14 +141,13 @@ export function ChangePasswordForm() {
               )}
             />
 
-            {/* Button */}
-            <div className="flex justify-end pt-14">
+            <div className="pt-2 sm:pt-4">
               <Button
                 type="submit"
                 variant="primary"
                 loading={isSubmitting}
-                disabled={isSubmitting}
-                className="w-auto"
+                disabled={!isDirty || isSubmitting}
+                className="h-12 w-full rounded-xl text-base font-semibold sm:h-11"
               >
                 Change Password
               </Button>
@@ -144,6 +155,6 @@ export function ChangePasswordForm() {
           </form>
         </Form>
       </div>
-    </>
+    </div>
   );
 }

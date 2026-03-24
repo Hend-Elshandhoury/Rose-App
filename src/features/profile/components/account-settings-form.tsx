@@ -31,7 +31,7 @@ import { PhoneInput } from "@/components/ui/phone-input";
 import {
   useUpdateProfileMutation,
   useUploadProfilePhotoMutation,
-} from "@/hooks/use-profile-mutations";
+} from "@/hooks/use-profile";
 
 import {
   profileUpdateSchema,
@@ -101,203 +101,210 @@ export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
   }
 
   /** unified user image */
-  const userImageSrc =
-    user.photo?.startsWith("http")
-      ? user.photo
-      : `${process.env.NEXT_PUBLIC_IMAGE_API_URL ?? ""}/${user.photo}`;
+  const userImageSrc = user.photo?.startsWith("http")
+    ? user.photo
+    : `${process.env.NEXT_PUBLIC_IMAGE_API_URL ?? ""}/${user.photo}`;
 
   return (
-    <div className="mx-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-8">
+    <div className="mx-auto w-full px-6 ">
+      <h1 className="mb-4 text-xl font-bold text-zinc-900 dark:text-zinc-100 sm:mb-6 sm:text-2xl md:text-3xl">
+        Account Settings
+      </h1>
 
-{/* Profile Photo */}
-<div className="flex items-center gap-4 mb-8">
-  <div className="relative w-14 h-14 shrink-0">
-
-    {/* Profile Image */}
-    <div className="relative w-full h-full rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-700">
-      {user.photo ? (
-        <Image
-          src={userImageSrc}
-          alt="Profile photo"
-          fill
-          className="object-cover"
-        />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 text-sm font-medium">
-          {user.firstName?.[0] ?? "?"}
-        </div>
-      )}
-    </div>
-
-    {/* Hidden Input */}
-    <input
-      ref={photoInputRef}
-      type="file"
-      accept=".jpg,.jpeg,.png,.gif"
-      className="hidden"
-      onChange={handlePhotoChange}
-    />
-
-    {/* Upload Icon Button */}
-    <button
-      type="button"
-      onClick={() => photoInputRef.current?.click()}
-      disabled={uploadPhotoMutation.isPending}
-      className="absolute bottom-0 right-0 flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 shadow-sm hover:bg-zinc-100 dark:hover:bg-zinc-600 transition"
-      aria-label="Upload photo"
-    >
-      <CloudUpload className="w-3.5 h-3.5 text-zinc-700 dark:text-zinc-200" />
-    </button>
-
-  </div>
-
-  <div>
-    <p className="font-medium text-zinc-900 dark:text-zinc-300">
-      Upload Photo
-    </p>
-    <p className="text-sm text-zinc-500 dark:text-zinc-400">
-      You can upload a .jpg, .png or .gif photo with max size of 5MB
-    </p>
-  </div>
-</div>
-
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-2"
-        >
-
-          {/* First / Last Name */}
-          <div className="grid md:grid-cols-2 gap-4">
-
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="First name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+      <div className="rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-md dark:border-zinc-700 dark:bg-zinc-900 sm:p-6 md:p-8 md:shadow-lg">
+        {/* Profile Photo */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <div className="relative mx-auto h-20 w-20 shrink-0 sm:mx-0 sm:h-[4.5rem] sm:w-[4.5rem] md:h-[4.75rem] md:w-[4.75rem]">
+            {/* Profile Image */}
+            <div className="relative h-full w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+              {user.photo ? (
+                <Image
+                  src={userImageSrc}
+                  alt="Profile photo"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-zinc-500 dark:text-zinc-400 text-sm font-medium">
+                  {user.firstName?.[0] ?? "?"}
+                </div>
               )}
-            />
-
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Last name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-          </div>
-
-          {/* Email */}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="Email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Phone */}
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <PhoneInput
-                    defaultCountry="EG"
-                    value={field.value}
-                    onChange={field.onChange}
-                    className="w-full"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Gender */}
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gender</FormLabel>
-
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  disabled={isSubmitting}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select gender" />
-                    </SelectTrigger>
-                  </FormControl>
-
-                  <SelectContent>
-                    {GENDER_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-4">
-
-            <div className="flex items-center gap-6">
-
-              <DeleteAccountDialog />
-
-              <Link
-                href="/dashboard/products/change-password"
-                className="text-sm text-zinc-700 dark:text-zinc-300 hover:underline"
-              >
-                Change Password
-              </Link>
-
             </div>
 
-            <Button
-              type="submit"
-              disabled={!isDirty || isSubmitting}
-              variant="primary"
-              loading={isSubmitting}
-              className="w-auto"
-            >
-              Save Changes
-            </Button>
+            {/* Hidden Input */}
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept=".jpg,.jpeg,.png,.gif"
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
 
+            {/* Upload Icon Button */}
+            <button
+              type="button"
+              onClick={() => photoInputRef.current?.click()}
+              disabled={uploadPhotoMutation.isPending}
+              className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full border border-zinc-300 bg-white shadow-sm transition hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+              aria-label="Upload photo"
+            >
+              <CloudUpload className="h-4 w-4 text-zinc-700 dark:text-zinc-200" />
+            </button>
           </div>
 
-        </form>
-      </Form>
+          <div className="min-w-0 flex-1 text-center sm:text-start">
+            <p className="font-semibold text-zinc-900 dark:text-zinc-300">
+              Upload Photo
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-sm">
+              You can upload a .jpg, .png, or .gif photo with max size of 5MB.
+            </p>
+          </div>
+        </div>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 sm:gap-5 md:gap-6"
+          >
+            {/* First / Last Name */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4 md:gap-5">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="First name"
+                        className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 dark:border-zinc-600 dark:bg-zinc-800/50"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Last name"
+                        className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 dark:border-zinc-600 dark:bg-zinc-800/50"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 dark:border-zinc-600 dark:bg-zinc-800/50"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Phone */}
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      defaultCountry="EG"
+                      value={field.value}
+                      onChange={field.onChange}
+                      className="w-full min-w-0 [&_input]:h-11 [&_input]:rounded-lg"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Gender */}
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={isSubmitting}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="h-11 rounded-lg border-zinc-200 bg-zinc-50/50 dark:border-zinc-600 dark:bg-zinc-800/50">
+                        <SelectValue placeholder="Select gender" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent>
+                      {GENDER_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Footer — design: row of links, then full-width save on mobile */}
+            <div className="mt-6 flex sm:flex-col md:flex-row justify-between gap-4 sm:mt-8">
+              <div className="flex flex-row items-center gap-3">
+                <DeleteAccountDialog />
+                <Link
+                  href="/dashboard/account/change-password"
+                  className="shrink-0 text-sm font-medium text-zinc-800 transition-colors hover:text-maroon-700 dark:text-zinc-50 dark:hover:text-softPink-200"
+                >
+                  Change Password
+                </Link>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={!isDirty || isSubmitting}
+                variant="primary"
+                loading={isSubmitting}
+                className="h-12 w-fit md:w-fit rounded-xl px-6 text-base font-semibold sm:h-11"
+                aria-disabled={!isDirty || isSubmitting}
+              >
+                Save Changes
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }

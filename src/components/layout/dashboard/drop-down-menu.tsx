@@ -7,7 +7,7 @@ import {
 import { LogOut, UserRound } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from "next-intl";
-import Link from 'next/link';
+import { Link } from "@/i18n/navigation";
 import React from 'react';
 
 export function CustomDropDownMenu() {
