@@ -11,7 +11,7 @@ export default async function ChangePasswordPage() {
   }
 
   return (
-    <div className="w-full min-w-0 max-w-[100vw] py-2 sm:py-4">
+    <div className="w-full min-w-0  py-2 sm:py-4">
       <ChangePasswordForm />
     </div>
   );

@@ -14,7 +14,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <DashboardProvider>
       <AppSidebar />
 
-      {/* Use div (not SidebarInset/main) — root layout already wraps routes in <main> */}
       <div
         className={cn(
           "relative flex min-h-svh w-full min-w-0 flex-1 flex-col bg-zinc-50 dark:bg-zinc-800",
@@ -28,7 +27,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Bottom padding on small screens for fixed tab bar */}
-        <div className="flex-1 px-3 pb-8 sm:px-4 ">
+        <div className="flex-1 px-3 pb-24 pt-2 sm:px-4 md:px-6 md:pb-8 lg:px-8 lg:pb-10">
           {children}
         </div>
 
